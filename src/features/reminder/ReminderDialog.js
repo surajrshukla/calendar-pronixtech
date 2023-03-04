@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { colors } from '../../app/helpers/calendar.helper';
 import ReminderColorPicker from './ReminderColorPicker';
-import { saveReminder, updateReminder } from './reminderSlice';
-import { ReactDialogBox } from 'react-js-dialog-box'
+import { saveReminder } from './reminderSlice';
+import { ReactDialogBox } from 'react-js-dialog-box';
 import { useAppDispatch } from '../../app/hooks';
-import { createReminder } from './reminder.services';
+import { createReminder, getCurrentMonthReminders, updateReminder } from './reminder.services';
 
 const uniqid = require('uniqid');
 
@@ -88,17 +88,17 @@ function ReminderDialog(props) {
         }
         const payload = {
             reminder,
-            gridId: props.day.id,
+            gridId: props.gridId,
             date: props.day.date,
             month: (new Date(props.day.date)).getMonth() +1,
             year: (new Date(props.day.date)).getFullYear()
         }
         if (props.mode === "UP") {
-            // dispatch(createReminder(payload));
-            dispatch(updateReminder(payload));
+            dispatch(updateReminder(payload))
+            // dispatch(updateReminder(payload));
         } else {
-            // dispatch(createReminder(payload));
-            dispatch(saveReminder(payload))
+            dispatch(createReminder(payload))
+            // dispatch(saveReminder(payload))
         }
         props.handleClose()
     }
@@ -132,9 +132,9 @@ function ReminderDialog(props) {
                 <label>Reminder Time:</label>
                 <input style={{ width: 30 }} value={state.reminderHour} onChange={handleReminderHour} type="number" name="reminderTime"></input><span>{" / "}</span>
                 <input style={{ width: 30 }} value={state.reminderMinute} onChange={handleReminderMinutes} type="number" name="reminderTime"></input><br></br>
-                <ReminderColorPicker updateColor={updateColor} gridId={props.day.gridId} />
+                <ReminderColorPicker updateColor={updateColor} />
                 <div className='text-center'>
-                    <button onClick={handleSubmit}>Create Reminder</button>
+                        <button onClick={handleSubmit}>{props.mode === "UP" ? "Update Reminder" : "Create Reminder"}</button>
                 </div>
             </div>
         </ReactDialogBox>

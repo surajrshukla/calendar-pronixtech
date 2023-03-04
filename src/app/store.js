@@ -7,4 +7,7 @@ export const store = configureStore({
         calendar: calendarSlice,
         reminder: reminderSlice
     },
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: false,
+      }),
 });

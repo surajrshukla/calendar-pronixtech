@@ -16,6 +16,10 @@ function Calendar() {
         (state) => state.calendar.currentMonthDetail
     );
 
+    const isLoading = useAppSelector(
+        (state) => state.calendar.loading
+    );
+
     useEffect(() => {
         dispatch(createCalenar());
         const currentDate = new Date();
@@ -25,6 +29,8 @@ function Calendar() {
         }
         dispatch(getCurrentMonthReminders(data));
     }, [])
+
+    if (isLoading) return <div>loading</div>
     
     return (
         <div className="calendar_month">

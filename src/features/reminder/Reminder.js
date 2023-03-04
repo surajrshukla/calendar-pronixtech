@@ -32,7 +32,7 @@ function Reminder(props) {
                 <div><b>{props.reminder.description} <span onClick={handleDelete} style={{ float: "right", padding: 4 }} className="link">x</span> <span onClick={openDialog} style={{ float: "right", padding: 4 }} className="link">edit</span></b></div>
                 <div><b>{parseTime(props.reminder.reminderHour, props.reminder.reminderMinute)}</b></div>
             </div>
-            {isReminderDialogOpen && <ReminderDialog mode="UP" gridId={props.gridId} reminder={props.reminder} handleClose={handleClose} />}
+            {isReminderDialogOpen && <ReminderDialog mode="UP" gridId={props.gridId} day={props.day} reminder={props.reminder} handleClose={handleClose} />}
         </>
     )
 }

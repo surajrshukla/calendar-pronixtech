@@ -98,6 +98,22 @@ const parseTime = (hour, minute) => {
   return `${hour}:${minute}`
 }
 
+const getGroupedMonthStartDatesByWeekday = (year) => {
+  const groups = [[], [], [], [], [], [], []];
+
+  for (let month = 0; month < 12; month++) {
+    const startDate = new Date(year, month, 1);
+    
+    const weekday = startDate.getDay();
+    
+    groups[weekday].push(startDate);
+  }
+  const sundayGrouop = groups.shift();
+  groups.push(sundayGrouop);
+
+  return groups
+}
+
 exports.month = month;
 exports.weekdays = weekdays;
 exports.getDay = getDay;
@@ -106,3 +122,4 @@ exports.colors = colors;
 exports.previousMonthDays = previousMonthDays;
 exports.createDaysForCurrentMonth = createDaysForCurrentMonth;
 exports.parseTime = parseTime;
+exports.getGroupedMonthStartDatesByWeekday = getGroupedMonthStartDatesByWeekday;

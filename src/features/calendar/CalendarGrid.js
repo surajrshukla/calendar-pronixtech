@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import Reminder from '../reminder/Reminder';
 import ReminderDialog from '../reminder/ReminderDialog';
 import { registerGrid } from '../reminder/reminderSlice';
+import ReminderPopup from '../reminder/ReminderPopup';
 
 
 function CalendarGrid(props) {
@@ -25,7 +26,7 @@ function CalendarGrid(props) {
         (state) => state.reminder.grids
     );
 
-    const grid = find(grids, { dayOfMonth: props.day.dayOfMonth, isCurrentMonth: true });
+    const grid = find(grids, { date: props.day.date });
 
 
     const handleAddReminder = (ev) => {
@@ -38,22 +39,32 @@ function CalendarGrid(props) {
         setDialogOpen(false);
     }
 
-    const handleOpenReminderPopup = (ev, reminders, gridId) => {
+    const handleOpenReminderPopup = (ev) => {
         ev.stopPropagation();
         setopenPopup(true);
+    }
+
+    const handleCloseReminderPopup = () => {
+        setopenPopup(false)
+    }
+
+    const renderPopup = (reminder, gridId, day) => {
+        return <ReminderPopup handleCloseReminderPopup={handleCloseReminderPopup}>
+            {reminder.map(reminder => (<Reminder gridId={gridId} day={day} key={reminder.id} reminder={reminder} />))}
+        </ReminderPopup>
     }
 
 
     const renderReminders = grid => {
         if (grid.reminders.length > 1) {
             return <>
-                <Reminder gridId={grid.id} key={grid.reminders[0].id} reminder={grid.reminders[0]} />
-                <Reminder gridId={grid.id} key={grid.reminders[1].id} reminder={grid.reminders[1]} />
-                {grid.reminders.length - 2 !== 0 && <div onClick={ev => handleOpenReminderPopup(ev, grid.reminders.slice(2), grid.id)} id={grid.id + "_extra"} className="link">{`+ ${grid.reminders.length - 2} more`}</div>}
+                <Reminder gridId={grid.gridId} day={props.day} key={grid.reminders[0].id} reminder={grid.reminders[0]} />
+                <Reminder gridId={grid.gridId} day={props.day} key={grid.reminders[1].id} reminder={grid.reminders[1]} />
+                {grid.reminders.length - 2 !== 0 && <div onClick={ev => handleOpenReminderPopup(ev)} id={grid.gridId + "_extra"} className="link">{`+ ${grid.reminders.length - 2} more`}</div>}
             </>
         }
 
-        return grid.reminders.map(reminder => (<Reminder gridId={grid.id} key={reminder.id} reminder={reminder} />))
+        return grid.reminders.map(reminder => (<Reminder gridId={grid.gridId} day={props.day} key={reminder.id} reminder={reminder} />))
     }
 
 
@@ -64,7 +75,7 @@ function CalendarGrid(props) {
             </div>
             {isDialogOpen && <ReminderDialog day={props.day} handleClose={handleClose} />}
             {grid && grid.reminders.length && props.day.isCurrentMonth > 0 ? renderReminders(grid) : null}
-            {grid && openPopup && this.renderPopup(grid.reminders.slice(2), grid.id)}
+            {grid && openPopup && renderPopup(grid.reminders.slice(2), grid.gridId, props.day)}
         </li>
     )
 }
